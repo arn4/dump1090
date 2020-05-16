@@ -1,6 +1,9 @@
 // -*- mode: javascript; indent-tabs-mode: nil; c-basic-offset: 8 -*-
 "use strict";
 
+// Data URL
+var dataURL = 'https://home.arnaboldi.lu/flight-tracker/data'
+
 // Define our global variables
 var OLMap         = null;
 var StaticFeatures = new ol.Collection();
@@ -140,7 +143,7 @@ function fetchData() {
                 return;
         }
 
-	FetchPending = $.ajax({ url: 'data/aircraft.json',
+	FetchPending = $.ajax({ url: dataURL+'/aircraft.json',
                                 timeout: 5000,
                                 cache: false,
                                 dataType: 'json' });
@@ -154,12 +157,12 @@ function fetchData() {
                         var plane = PlanesOrdered[i];
                         plane.updateTick(now, LastReceiverTimestamp);
                 }
-                
+
 		selectNewPlanes();
 		refreshTableInfo();
 		refreshSelected();
 		refreshHighlighted();
-                
+
                 if (ReceiverClock) {
                         var rcv = new Date(now * 1000);
                         ReceiverClock.render(rcv.getUTCHours(),rcv.getUTCMinutes(),rcv.getUTCSeconds());
@@ -172,7 +175,7 @@ function fetchData() {
                                 $("#update_error_detail").text("The data from dump1090 hasn't been updated in a while. Maybe dump1090 is no longer running?");
                                 $("#update_error").css('display','block');
                         }
-                } else { 
+                } else {
                         StaleReceiverCount = 0;
                         LastReceiverTimestamp = now;
                         $("#update_error").css('display','none');
@@ -225,7 +228,7 @@ function initialize() {
 				SelectedPlane = null;
 				selectedPlane.selected = null;
 				selectedPlane.clearLines();
-				selectedPlane.updateMarker();         
+				selectedPlane.updateMarker();
 				refreshSelected();
 				refreshHighlighted();
 				$('#selected_infoblock').hide();
@@ -239,7 +242,7 @@ function initialize() {
 		// look at the window resize to resize the pop-up infoblock so it doesn't float off the bottom or go off the top
 		$(window).on('resize', function() {
 			var topCalc = ($(window).height() - $('#selected_infoblock').height() - 60);
-			// check if the top will be less than zero, which will be overlapping/off the screen, and set the top correctly. 
+			// check if the top will be less than zero, which will be overlapping/off the screen, and set the top correctly.
 			if (topCalc < 0) {
 				topCalc = 0;
 				$('#selected_infoblock').css('height', ($(window).height() - 60) +'px');
@@ -247,7 +250,7 @@ function initialize() {
 			$('#selected_infoblock').css('top', topCalc + 'px');
 		});
 
-		// to make the infoblock responsive 
+		// to make the infoblock responsive
 		$('#sidebar_container').on('resize', function() {
 			if ($('#sidebar_container').width() < 500) {
 				$('#selected_infoblock').addClass('infoblock-container-small');
@@ -255,7 +258,7 @@ function initialize() {
 				$('#selected_infoblock').removeClass('infoblock-container-small');
 			}
 		});
-	
+
         // Set up event handlers for buttons
         $("#toggle_sidebar_button").click(toggleSidebarVisibility);
         $("#expand_sidebar_button").click(expandSidebar);
@@ -275,7 +278,7 @@ function initialize() {
             errorPlacement: function(error, element) {
                 return true;
             },
-            
+
             rules: {
                 minAltitude: {
                     number: true,
@@ -347,7 +350,7 @@ function initialize() {
 
         // Get receiver metadata, reconfigure using it, then continue
         // with initialization
-        $.ajax({ url: 'data/receiver.json',
+        $.ajax({ url: dataURL+'/receiver.json',
                  timeout: 5000,
                  cache: false,
                  dataType: 'json' })
@@ -360,7 +363,7 @@ function initialize() {
                                 DefaultCenterLat = data.lat;
                                 DefaultCenterLon = data.lon;
                         }
-                        
+
                         Dump1090Version = data.version;
                         RefreshInterval = data.refresh;
                         PositionHistorySize = data.history;
@@ -393,7 +396,7 @@ function load_history_item(i) {
         console.log("Loading history #" + i);
         $("#loader_progress").attr('value',i);
 
-        $.ajax({ url: 'data/history_' + i + '.json',
+        $.ajax({ url: dataURL+'/history_' + i + '.json',
                  timeout: 5000,
                  cache: false,
                  dataType: 'json' })
@@ -647,7 +650,7 @@ function initialize_map() {
                         }
                 }
         });
-    
+
         OLMap.getView().on('change:resolution', function(event) {
                 ZoomLvl = localStorage['ZoomLvl']  = OLMap.getView().getZoom();
                 for (var plane in Planes) {
@@ -805,7 +808,7 @@ function initialize_map() {
 function createSiteCircleFeatures() {
     // Clear existing circles first
     SiteCircleFeatures.forEach(function(circleFeature) {
-       StaticFeatures.remove(circleFeature); 
+       StaticFeatures.remove(circleFeature);
     });
     SiteCircleFeatures.clear();
 
@@ -853,7 +856,7 @@ function reaper() {
         for (var i = 0; i < PlanesOrdered.length; ++i) {
                 var plane = PlanesOrdered[i];
                 if (plane.seen > 300) {
-                        // Reap it.                                
+                        // Reap it.
                         plane.tr.parentNode.removeChild(plane.tr);
                         plane.tr = null;
                         delete Planes[plane.icao];
@@ -903,12 +906,12 @@ function refreshSelected() {
         }
 
 	refreshPageTitle();
-       
+
         var selected = false;
 	if (typeof SelectedPlane !== 'undefined' && SelectedPlane != "ICAO" && SelectedPlane != null) {
     	        selected = Planes[SelectedPlane];
         }
-        
+
         $('#dump1090_infoblock').css('display','block');
         $('#dump1090_version').text(Dump1090Version);
         $('#dump1090_total_ac').text(TrackedAircraft);
@@ -926,7 +929,7 @@ function refreshSelected() {
         if (!selected) {
                 return;
         }
-      
+
         if (selected.flight !== null && selected.flight !== "") {
                 $('#selected_callsign').text(selected.flight);
         } else {
@@ -964,7 +967,7 @@ function refreshSelected() {
         } else {
                 $('#selected_squawk').text(selected.squawk);
         }
-	
+
 		$('#selected_speed').text(format_speed_long(selected.gs, DisplayUnits));
 		$('#selected_ias').text(format_speed_long(selected.ias, DisplayUnits));
 		$('#selected_tas').text(format_speed_long(selected.tas, DisplayUnits));
@@ -1023,7 +1026,7 @@ function refreshSelected() {
         $('#selected_rssi').text(selected.rssi.toFixed(1) + ' dBFS');
         $('#selected_message_count').text(selected.messages);
 		$('#selected_photo_link').html(getFlightAwarePhotoLink(selected.registration));
-		
+
 		$('#selected_altitude_geom').text(format_altitude_long(selected.alt_geom, selected.geom_rate, DisplayUnits));
         $('#selected_mag_heading').text(format_track_long(selected.mag_heading));
         $('#selected_true_heading').text(format_track_long(selected.true_heading));
@@ -1087,7 +1090,7 @@ function refreshSelected() {
 			} else if (selected.sil_type == "persample") {
 				sampleRate = " per sample";
 			}
-			
+
 			switch (selected.sil) {
 				case 0:
 					silDesc = "&gt; 1×10<sup>-3</sup>";
@@ -1249,11 +1252,11 @@ function refreshTableInfo() {
 
 		if (tableplane.icao == SelectedPlane)
             classes += " selected";
-                    
+
         if (tableplane.squawk in SpecialSquawks) {
             classes = classes + " " + SpecialSquawks[tableplane.squawk].cssClass;
             show_squawk_warning = true;
-		}			                
+		}
 
         // ICAO doesn't change
         if (tableplane.flight) {
@@ -1359,7 +1362,7 @@ function resortTable() {
         }
 
         PlanesOrdered.sort(sortFunction);
-        
+
         var tbody = document.getElementById('tableinfo').tBodies[0];
         for (var i = 0; i < PlanesOrdered.length; ++i) {
                 tbody.appendChild(PlanesOrdered[i].tr);
@@ -1415,7 +1418,7 @@ function selectPlaneByHex(hex,autofollow) {
 		Planes[SelectedPlane].updateLines();
 		Planes[SelectedPlane].updateMarker();
 	    $(Planes[SelectedPlane].tr).addClass("selected");
-	} else { 
+	} else {
 		SelectedPlane = null;
 	}
 
@@ -1425,7 +1428,7 @@ function selectPlaneByHex(hex,autofollow) {
 			OLMap.getView().setZoom(8);
 	} else {
 		FollowSelected = false;
-	} 
+	}
 
 	refreshSelected();
 	refreshHighlighted();
@@ -1567,7 +1570,7 @@ function resetMap() {
         // Set and refresh
         OLMap.getView().setZoom(ZoomLvl);
 	OLMap.getView().setCenter(ol.proj.fromLonLat([CenterLon, CenterLat]));
-	
+
 	selectPlaneByHex(null,false);
 }
 
@@ -1606,7 +1609,7 @@ function showMap() {
     $("#sidebar_container").width("470px");
     setColumnVisibility();
     setSelectedInfoBlockVisibility();
-    updateMapSize();    
+    updateMapSize();
 }
 
 function showColumn(table, columnId, visible) {
@@ -1626,7 +1629,7 @@ function setColumnVisibility() {
     var infoTable = $("#tableinfo");
 
     showColumn(infoTable, "#registration", !mapIsVisible);
-    showColumn(infoTable, "#aircraft_type", !mapIsVisible);   
+    showColumn(infoTable, "#aircraft_type", !mapIsVisible);
     showColumn(infoTable, "#vert_rate", !mapIsVisible);
     showColumn(infoTable, "#rssi", !mapIsVisible);
     showColumn(infoTable, "#lat", !mapIsVisible);
@@ -1668,7 +1671,7 @@ function adjustSelectedInfoBlockPosition() {
         var marker = selectedPlane.marker;
         var markerCoordinates = selectedPlane.marker.getGeometry().getCoordinates();
 		var markerPosition = OLMap.getPixelFromCoordinate(markerCoordinates);
-		
+
         // Get map size
         var mapCanvas = $('#map_canvas');
         var mapExtent = getExtent(0, 0, mapCanvas.width(), mapCanvas.height());
@@ -1693,7 +1696,7 @@ function adjustSelectedInfoBlockPosition() {
                 }
             }
         }
-    } 
+    }
     catch(e) { }
 }
 
@@ -1713,7 +1716,7 @@ function isPointInsideExtent(x, y, extent) {
 function initializeUnitsSelector() {
     // Get display unit preferences from local storage
     if (!localStorage.getItem('displayUnits')) {
-        localStorage['displayUnits'] = "nautical";
+        localStorage['displayUnits'] = 'metric';
     }
     var displayUnits = localStorage['displayUnits'];
     DisplayUnits = displayUnits;
@@ -1773,7 +1776,7 @@ function onFilterByAltitude(e) {
         SelectedPlane = null;
         selectedPlane.selected = false;
         selectedPlane.clearLines();
-        selectedPlane.updateMarker();         
+        selectedPlane.updateMarker();
         refreshSelected();
         refreshHighlighted();
     }
@@ -1902,7 +1905,7 @@ function getFlightAwarePhotoLink(registration) {
         return "<a target=\"_blank\" href=\"https://flightaware.com/photos/aircraft/" + registration.replace(/[^0-9a-z]/ig,'') + "\">See Photos</a>";
     }
 
-    return "";   
+    return "";
 }
 
 function getAirframesModeSLink(code) {
@@ -1910,14 +1913,14 @@ function getAirframesModeSLink(code) {
         return "<a href=\"http://www.airframes.org/\" onclick=\"$('#airframes_post_icao').attr('value','" + code + "'); document.getElementById('horrible_hack').submit.call(document.getElementById('airframes_post')); return false;\">Airframes.org: " + code.toUpperCase() + "</a>";
     }
 
-    return "";   
+    return "";
 }
 
 
 // takes in an elemnt jQuery path and the OL3 layer name and toggles the visibility based on clicking it
 function toggleLayer(element, layer) {
 	// set initial checked status
-	ol.control.LayerSwitcher.forEachRecursive(layers, function(lyr) { 
+	ol.control.LayerSwitcher.forEachRecursive(layers, function(lyr) {
 		if (lyr.get('name') === layer && lyr.getVisible()) {
 			$(element).addClass('settingsCheckboxChecked');
 		}
@@ -1927,7 +1930,7 @@ function toggleLayer(element, layer) {
 		if ($(element).hasClass('settingsCheckboxChecked')) {
 			visible = true;
 		}
-		ol.control.LayerSwitcher.forEachRecursive(layers, function(lyr) { 
+		ol.control.LayerSwitcher.forEachRecursive(layers, function(lyr) {
 			if (lyr.get('name') === layer) {
 				if (visible) {
 					lyr.setVisible(false);
