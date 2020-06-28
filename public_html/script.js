@@ -2,7 +2,7 @@
 "use strict";
 
 // Data URL
-var dataURL = 'https://home.arnaboldi.lu/flight-tracker/data'
+var dataURL = 'https://home.arnaboldi.lu/flight-tracker/data/fa/'
 
 // Define our global variables
 var OLMap         = null;
