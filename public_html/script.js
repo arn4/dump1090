@@ -148,7 +148,7 @@ function fetchData() {
     return;
   }
 
-  FetchPending = $.ajax({ url: dataURL+'/aircraft.json',
+  FetchPending = $.ajax({ url: dataURL+'aircraft.json',
   timeout: 5000,
   cache: false,
   dataType: 'json' });
@@ -940,7 +940,7 @@ function initialize_map() {
     } else {
       $('#selected_callsign').text('n/a');
     }
-    $('#selected_flightaware_link').html(getFlightAwareModeSLink(selected.icao, selected.flight, "Visit Flight Page"));
+    $('#selected_flightaware_link').html(getFR24ModeSLink(selected.icao, selected.flight, "Visit Flight Page"));
 
     if (selected.registration !== null) {
       $('#selected_registration').text(selected.registration);
@@ -1265,7 +1265,7 @@ function initialize_map() {
 
         // ICAO doesn't change
         if (tableplane.flight) {
-          tableplane.tr.cells[2].innerHTML = getFlightAwareModeSLink(tableplane.icao, tableplane.flight, tableplane.flight);
+          tableplane.tr.cells[2].innerHTML = getFR24ModeSLink(tableplane.icao, tableplane.flight, tableplane.flight);
         } else {
           tableplane.tr.cells[2].innerHTML = "";
         }
@@ -1283,8 +1283,9 @@ function initialize_map() {
         tableplane.tr.cells[14].textContent = (tableplane.position !== null ? tableplane.position[1].toFixed(4) : "");
         tableplane.tr.cells[15].textContent = (tableplane.position !== null ? tableplane.position[0].toFixed(4) : "");
         tableplane.tr.cells[16].textContent = format_data_source(tableplane.getDataSource());
-        tableplane.tr.cells[17].innerHTML = getAirframesModeSLink(tableplane.icao);
-        tableplane.tr.cells[18].innerHTML = getFlightAwareModeSLink(tableplane.icao, tableplane.flight);
+        //[old_line]tableplane.tr.cells[17].innerHTML = getAirframesModeSLink(tableplane.icao);
+        tableplane.tr.cells[17].innerHTML = getPlaneFinderModeSLink(tableplane.icao);
+        tableplane.tr.cells[18].innerHTML = getFR24ModeSLink(tableplane.icao, tableplane.flight);
         tableplane.tr.cells[19].innerHTML = getFlightAwarePhotoLink(tableplane.registration);
         tableplane.tr.className = classes;
       }
@@ -1877,28 +1878,30 @@ function initialize_map() {
     PlaneFilter.altitudeUnits = DisplayUnits;
   }
 
-  function getFlightAwareIdentLink(ident, linkText) {
+  function getFR24IdentLink(ident, linkText) {
     if (ident !== null && ident !== "") {
       if (!linkText) {
         linkText = ident;
       }
-      return "<a target=\"_blank\" href=\"https://flightaware.com/live/flight/" + ident.trim() + "\">" + linkText + "</a>";
+      return "<a target=\"_blank\" href=\"https://flightradar24.com/" + ident.trim() + "\">" + linkText + "</a>";
     }
 
     return "";
   }
 
-  function getFlightAwareModeSLink(code, ident, linkText) {
+  function getFR24ModeSLink(code, ident, linkText) {
     if (code !== null && code.length > 0 && code[0] !== '~' && code !== "000000") {
       if (!linkText) {
-        linkText = "FlightAware: " + code.toUpperCase();
+        linkText = "FlightRadar24: " + code.toUpperCase();
       }
 
-      var linkHtml = "<a target=\"_blank\" href=\"https://flightaware.com/live/modes/" + code ;
+      // var linkHtml = "<a target=\"_blank\" href=\"https://flightradar24.com/flight/" + code;
+      var linkHtml = "<a target=\"_blank\" href=\"http://fr24.com/";
       if (ident !== null && ident !== "") {
-        linkHtml += "/ident/" + ident.trim();
+        linkHtml += ident.trim() + "/";
       }
-      linkHtml += "/redirect\">" + linkText + "</a>";
+      // linkHtml += "/redirect\">" + linkText + "</a>";
+      linkHtml += "\">" + linkText + "</a>";
       return linkHtml;
     }
 
@@ -1913,13 +1916,12 @@ function initialize_map() {
     return "";
   }
 
-  function getAirframesModeSLink(code) {
-    if (code !== null && code.length > 0 && code[0] !== '~' && code !== "000000") {
-      return "<a href=\"http://www.airframes.org/\" onclick=\"$('#airframes_post_icao').attr('value','" + code + "'); document.getElementById('horrible_hack').submit.call(document.getElementById('airframes_post')); return false;\">Airframes.org: " + code.toUpperCase() + "</a>";
-    }
-
-    return "";
+function getPlaneFinderModeSLink(code) {
+  if (code !== null && code.length > 0 && code[0] !== '~' && code !== "000000") {
+    return "<a target=\"_blank\" href=\"https://planefinder.net/flight/" + code.toUpperCase() + "\">PlaneFinder: " + code.toUpperCase() + "</a>";
   }
+  return "";
+}
 
 
   // takes in an elemnt jQuery path and the OL3 layer name and toggles the visibility based on clicking it

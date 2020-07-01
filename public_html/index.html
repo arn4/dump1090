@@ -37,8 +37,8 @@
 	but if we have an input control with that name then it shadows the submit() function that
 	we need. So steal the submit function off a different form. Surely there is a better way?!
 -->
-<form id="horrible_hack" class="hidden">
-</form>
+<!-- <form id="horrible_hack" class="hidden">
+</form> -->
 <form id="airframes_post" method="POST" action="http://www.airframes.org/" target="_blank" class="hidden">
 	<input type="hidden" name="reg1" value="">
 	<input type="hidden" name="selcal" value="">
@@ -236,8 +236,8 @@
 								<td id="lat" onclick="sortByLatitude();">Latitude</td>
 								<td id="lon" onclick="sortByLongitude();">Longitude</td>
 								<td id="data_source" onclick="sortByDataSource();">Data Source</td>
-								<td id="airframes_mode_s_link">Airframes.org</td>
-								<td id="flightaware_mode_s_link">FlightAware</td>
+								<td id="airframes_mode_s_link">Planefinder.net</td>
+								<td id="flightaware_mode_s_link">FlightRadar24.com</td>
 								<td id="flightaware_photo_link">Photos</td>
 							</tr>
 						</thead>
