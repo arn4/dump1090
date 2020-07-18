@@ -2,7 +2,7 @@
 "use strict";
 
 // Data URL
-var dataURL = 'https://home.arnaboldi.lu/flight-tracker/data/fa/'
+var dataURL = 'https://api.arnaboldi.lu/flight-tracker/'
 
 // arna edit
 var PageNameHead = 'Flight Tracker'
