@@ -11,11 +11,11 @@ PlaneCountInTitle = true;
 MessageRateInTitle = false;
 
 // -- Output Settings -------------------------------------
-// The DisplayUnits setting controls whether nautical (ft, NM, knots), 
-// metric (m, km, km/h) or imperial (ft, mi, mph) units are used in the 
+// The DisplayUnits setting controls whether nautical (ft, NM, knots),
+// metric (m, km, km/h) or imperial (ft, mi, mph) units are used in the
 // plane table and in the detailed plane info. Valid values are
 // "nautical", "metric", or "imperial".
-DisplayUnits = "nautical";
+DisplayUnits = "metric";
 
 // -- Map settings ----------------------------------------
 // These settings are overridden by any position information
@@ -23,18 +23,18 @@ DisplayUnits = "nautical";
 // degrees.
 
 // Default center of the map.
-DefaultCenterLat = 45.0;
-DefaultCenterLon = 9.0;
+DefaultCenterLat = 45.754;
+DefaultCenterLon = 9.137;
 // The google maps zoom level, 0 - 16, lower is further out
 DefaultZoomLvl   = 7;
 
 // Center marker. If dump1090 provides a receiver location,
 // that location is used and these settings are ignored.
 
-SiteShow    = false;           // true to show a center marker
-SiteLat     = 45.0;            // position of the marker
-SiteLon     = 9.0;
-SiteName    = "My Radar Site"; // tooltip of the marker
+SiteShow    = true;           // true to show a center marker
+SiteLat     = 45.754;            // position of the marker
+SiteLon     = 9.137;
+SiteName    = "My antenna position"; // tooltip of the marker
 
 // -- Marker settings -------------------------------------
 
@@ -96,13 +96,13 @@ OutlineMlatColor = '#4040FF';
 
 SiteCircles = true; // true to show circles (only shown if the center marker is shown)
 // In miles, nautical miles, or km (depending settings value 'DisplayUnits')
-SiteCirclesDistances = new Array(100,150,200);
-DefaultSiteCirclesCount = 3;
-DefaultSiteCirclesBaseDistance = 100;
-DefaultSiteCirclesInterval = 50;
+SiteCirclesDistances = new Array(150,250,350,450);
+DefaultSiteCirclesCount = 4;
+DefaultSiteCirclesBaseDistance = 150;
+DefaultSiteCirclesInterval = 100;
 
 // Controls page title, righthand pane when nothing is selected
-PageName = "PiAware SkyAware";
+PageName = "Flight Tracker - Luca Arnaboldi";
 
 // Show country flags by ICAO addresses?
 ShowFlags = true;
